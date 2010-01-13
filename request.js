@@ -16,7 +16,7 @@ exports.class.prototype.parseResponse = function(data){
 				this.dataMode = true;
 				var split = response.split(' ');
 				this.expectedLength = split[3];
-			} else if (response == 'END' || response == 'ERROR' || response == 'STORED') {
+			} else if (response == 'END' || response == 'ERROR' || response == 'STORED' || response == 'DELETED' || response == 'NOT_FOUND' || response == 'NOT_STORED') {
 				this.finish(response);
 			} else {
 				// unknown response string
@@ -41,7 +41,7 @@ exports.class.prototype.parseResponse = function(data){
 };
 
 exports.class.prototype.finish = function(status){
-	this.success = status != 'ERROR';
+	this.success = status != 'ERROR' && status != 'NOT_FOUND' && status != 'NOT_STORED';
 	if (this.config.callback) this.config.callback(this);
 	this.connection.finishRequest(this);
 };

@@ -14,19 +14,68 @@ exports.class.prototype.getConnection = function(){
 	return this.connection;
 };
 
-exports.class.prototype.get = function(key, callback){
-	this.getConnection().processRequest({
-		command:'get ' + key,
-		callback:callback
-	});
+exports.class.prototype.get = function(key, options){
+	options = {}.apply(options);
+	var request = {
+			command:'get ' + key
+	};
+	if (options.callback) request.callback = options.callback;
+	this.getConnection().processRequest(request);
 };
 
-exports.class.prototype.set = function(key, value, callback){
-	this.getConnection().processRequest({
-		command:'set ' + key + ' 0 0 ' + value.length,
-		data:value,
-		callback:callback
-	});
+exports.class.prototype.set = function(key, value, options){
+	options = {
+		expires:0,
+		flags:0
+	}.apply(options);
+	var request = {
+		command:'set ' + key + ' ' + options.flags + ' ' + options.expires + ' ' + value.length,
+		data:value
+	};
+	if (options.callback) request.callback = options.callback;
+	this.getConnection().processRequest(request);
+};
+
+exports.class.prototype.add = function(key, value, options){
+	options = {
+		expires:0,
+		flags:0
+	}.apply(options);
+	var request = {
+		command:'add ' + key + ' ' + options.flags + ' ' + options.expires + ' ' + value.length,
+		data:value
+	};
+	if (options.callback) request.callback = options.callback;
+	this.getConnection().processRequest(request);
+};
+
+exports.class.prototype.append = function(key, value, options){
+	options = {}.apply(options);
+	var request = {
+		command:'append ' + key + ' 0 0 ' + value.length,
+		data:value
+	};
+	if (options.callback) request.callback = options.callback;
+	this.getConnection().processRequest(request);
+};
+
+exports.class.prototype.prepend = function(key, value, options){
+	options = {}.apply(options);
+	var request = {
+		command:'prepend ' + key + ' 0 0 ' + value.length,
+		data:value
+	};
+	if (options.callback) request.callback = options.callback;
+	this.getConnection().processRequest(request);
+};
+
+exports.class.prototype.del = function(key, options){
+	options = {}.apply(options);
+	var request = {
+		command:'delete ' + key
+	};
+	if (options.callback) request.callback = options.callback;
+	this.getConnection().processRequest(request);
 };
 
 exports.class.prototype.shutdown = function(){

@@ -7,6 +7,7 @@ var Memcache = {
 		Request:require('./request').class
 };
 var tcp = require('tcp');
+var sys = require('sys');
 
 exports.class.prototype.processRequest = function(request) {
 	// todo: implement some kind of queueing mechanism here
