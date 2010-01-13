@@ -1,5 +1,6 @@
 var Memcache = {
-	Connection:require('./connection').class	
+	Connection:require('./connection').class,
+	Pool:require('./pool').class
 };
 
 // this is for easier combining of objects
@@ -18,10 +19,23 @@ exports.class = function(host, port){
 };
 
 exports.class.prototype.getConnection = function(){
+	/*
 	if (!this.connection) {
 		this.connection = new Memcache.Connection(this.host, this.port);
 	}
 	return this.connection;
+	*/
+	return this.getPool().getConnection();
+};
+
+exports.class.prototype.getPool = function(){
+	if (!this.pool) {
+		this.pool = new Memcache.Pool({
+			host:this.host,
+			port:this.port
+		});
+	}
+	return this.pool;
 };
 
 exports.class.prototype.get = function(key, options){

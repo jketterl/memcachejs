@@ -21,6 +21,10 @@ exports.class.prototype.processRequest = function(request) {
 	});
 };
 
+exports.class.prototype.isBusy = function() {
+	return this.request != undefined;
+};
+
 exports.class.prototype.getTcpConnection = function(callback) {
 	if (this.tcpConnection == undefined) {
 		// no connection established? let's start a new one
