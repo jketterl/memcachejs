@@ -21,6 +21,14 @@ exports.class.prototype.get = function(key, callback){
 	});
 };
 
+exports.class.prototype.set = function(key, value, callback){
+	this.getConnection().processRequest({
+		command:'set ' + key + ' 0 0 ' + value.length,
+		data:value,
+		callback:callback
+	});
+};
+
 exports.class.prototype.shutdown = function(){
 	if (this.connection) this.connection.close();
 };
