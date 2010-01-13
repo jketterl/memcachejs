@@ -1,17 +1,20 @@
-exports.class = function(host, port){
-	this.host = host;
-	this.port = port;
-};
-
 var Memcache = {
 		Request:require('./request').class
 };
 var tcp = require('tcp');
 var sys = require('sys');
 
+exports.class = function(host, port){
+	this.host = host;
+	this.port = port;
+};
+
+require('sys').inherits(exports.class, process.EventEmitter);
+
 exports.class.prototype.processRequest = function(request) {
 	// todo: implement some kind of queueing mechanism here
 	if (this.request) return;
+	this.emit('status', 'busy');
 	this.request = request;
 	if (!(this.request instanceof Memcache.Request)) this.request = new Memcache.Request(this.request);
 	this.request.setConnection(this);
@@ -51,6 +54,7 @@ exports.class.prototype.getTcpConnection = function(callback) {
 
 exports.class.prototype.close = function() {
 	if (!this.tcpConnection) return;
+	this.emit('close');
 	this.tcpConnection.close();
 	delete this.tcpConnection;
 };
@@ -58,4 +62,15 @@ exports.class.prototype.close = function() {
 exports.class.prototype.finishRequest = function(request) {
 	if (request != this.request) return;
 	delete this.request;
+	this.emit('status', 'idle');
 };
+/*
+exports.class.prototype.setPool = function(pool) {
+	this.pool = pool;
+};
+
+exports.class.prototype.getPool = function() {
+	if (this.pool) return this.pool;
+	return false;
+};
+*/

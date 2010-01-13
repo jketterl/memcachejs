@@ -19,11 +19,29 @@ exports.class.prototype.getConnection = function(){
 		if (!this.pool[i].isBusy()) return this.pool[i];
 	}
 	if (this.pool.length < this.maxConnections) {
-		var connection = new Memcache.Connection(this.hos, this.port);
-		this.pool.push(connection);
-		require('sys').puts('# of connections is now: ' + this.pool.length);
+		var connection = new Memcache.Connection(this.host, this.port);
+		this.addConnection(connection);
 		return connection;
 	}
 	require('sys').puts('unable to open additional connections - max # of connections reached');
 	return false;
+};
+
+exports.class.prototype.addConnection = function(connection){
+	var method = this;
+	connection.addListener('status', function(status) {
+		//require('sys').puts('status is now ' + status);
+	});
+	connection.addListener('close', function() {
+		method.removeConnection(connection);
+	});
+	this.pool.push(connection);
+	require('sys').puts('# of connections is now: ' + this.pool.length);
+};
+
+exports.class.prototype.removeConnection = function(connection){
+	for (var i = 0; i < this.pool.length; i++){
+		if (this.pool[i] == connection) this.pool.splice(i, 1);
+	}
+	require('sys').puts('# of connections is now: ' + this.pool.length);
 };
