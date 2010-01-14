@@ -45,3 +45,7 @@ exports.class.prototype.removeConnection = function(connection){
 	}
 	require('sys').puts('# of connections is now: ' + this.pool.length);
 };
+
+exports.class.prototype.processRequest = function(request) {
+	this.getConnection().processRequest(request);
+};

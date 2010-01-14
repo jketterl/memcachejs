@@ -18,14 +18,22 @@ exports.class = function(host, port){
 	this.port = port ? port : 11211;
 };
 
+exports.pooling = true;
+
 exports.class.prototype.getConnection = function(){
-	/*
 	if (!this.connection) {
 		this.connection = new Memcache.Connection(this.host, this.port);
 	}
 	return this.connection;
-	*/
 	return this.getPool().getConnection();
+};
+
+exports.class.prototype.processRequest = function(request){
+	if (exports.pooling) {
+		return this.getPool().processRequest(request);
+	} else {
+		return this.getConnection().processRequest(request);
+	}
 };
 
 exports.class.prototype.getPool = function(){
@@ -44,7 +52,7 @@ exports.class.prototype.get = function(key, options){
 			command:'get ' + key
 	};
 	if (options.callback) request.callback = options.callback;
-	this.getConnection().processRequest(request);
+	this.processRequest(request);
 };
 
 exports.class.prototype.set = function(key, value, options){
@@ -57,7 +65,7 @@ exports.class.prototype.set = function(key, value, options){
 		data:value
 	};
 	if (options.callback) request.callback = options.callback;
-	this.getConnection().processRequest(request);
+	this.processRequest(request);
 };
 
 exports.class.prototype.add = function(key, value, options){
@@ -70,7 +78,7 @@ exports.class.prototype.add = function(key, value, options){
 		data:value
 	};
 	if (options.callback) request.callback = options.callback;
-	this.getConnection().processRequest(request);
+	this.processRequest(request);
 };
 
 exports.class.prototype.append = function(key, value, options){
@@ -80,7 +88,7 @@ exports.class.prototype.append = function(key, value, options){
 		data:value
 	};
 	if (options.callback) request.callback = options.callback;
-	this.getConnection().processRequest(request);
+	this.processRequest(request);
 };
 
 exports.class.prototype.prepend = function(key, value, options){
@@ -90,7 +98,7 @@ exports.class.prototype.prepend = function(key, value, options){
 		data:value
 	};
 	if (options.callback) request.callback = options.callback;
-	this.getConnection().processRequest(request);
+	this.processRequest(request);
 };
 
 exports.class.prototype.del = function(key, options){
@@ -99,7 +107,7 @@ exports.class.prototype.del = function(key, options){
 		command:'delete ' + key
 	};
 	if (options.callback) request.callback = options.callback;
-	this.getConnection().processRequest(request);
+	this.processRequest(request);
 };
 
 exports.class.prototype.shutdown = function(){
