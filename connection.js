@@ -54,9 +54,12 @@ exports.class.prototype.getTcpConnection = function(callback) {
 
 exports.class.prototype.close = function() {
 	if (!this.tcpConnection) return;
-	this.emit('close');
 	this.tcpConnection.close();
 	delete this.tcpConnection;
+	if (this.request) {
+		this.request.finish('ERROR');
+	}
+	this.emit('close');
 };
 
 exports.class.prototype.finishRequest = function(request) {

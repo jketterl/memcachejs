@@ -39,7 +39,7 @@ exports.class.prototype.addConnection = function(connection){
 		method.removeConnection(connection);
 	});
 	this.pool.push(connection);
-	require('sys').puts('# of connections is now: ' + this.pool.length);
+	//require('sys').puts('# of connections is now: ' + this.pool.length);
 };
 
 exports.class.prototype.removeConnection = function(connection){
@@ -51,7 +51,7 @@ exports.class.prototype.removeConnection = function(connection){
 			connection.removeListener('close');
 		}
 	}
-	require('sys').puts('# of connections is now: ' + this.pool.length);
+	//require('sys').puts('# of connections is now: ' + this.pool.length);
 };
 
 exports.class.prototype.processQueue = function(connection) {

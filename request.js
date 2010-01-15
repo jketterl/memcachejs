@@ -1,5 +1,5 @@
 exports.class = function(config){
-	this.config = config;
+	if (config) this.apply(config);
 };
 
 exports.class.prototype.setConnection = function(connection){
@@ -42,6 +42,6 @@ exports.class.prototype.parseResponse = function(data){
 
 exports.class.prototype.finish = function(status){
 	this.success = status != 'ERROR' && status != 'NOT_FOUND' && status != 'NOT_STORED';
-	if (this.config.callback) this.config.callback(this);
+	if (this.callback) this.callback(this);
 	this.connection.finishRequest(this);
 };
