@@ -12,6 +12,8 @@ exports.class = function(options){
 	});
 	// user-specified settings
 	if (options) this.apply(options);
+	// start a queue
+	this.queue = [];
 };
 
 exports.class.prototype.getConnection = function(){
@@ -30,6 +32,7 @@ exports.class.prototype.getConnection = function(){
 exports.class.prototype.addConnection = function(connection){
 	var method = this;
 	connection.addListener('status', function(status) {
+		if (status == 'idle') method.processQueue.apply(method, [connection]);
 		//require('sys').puts('status is now ' + status);
 	});
 	connection.addListener('close', function() {
@@ -41,11 +44,27 @@ exports.class.prototype.addConnection = function(connection){
 
 exports.class.prototype.removeConnection = function(connection){
 	for (var i = 0; i < this.pool.length; i++){
-		if (this.pool[i] == connection) this.pool.splice(i, 1);
+		if (this.pool[i] == connection) {
+			this.pool.splice(i, 1);
+			//TODO this should be more specific, i.e. include a second parameter
+			connection.removeListener('status');
+			connection.removeListener('close');
+		}
 	}
 	require('sys').puts('# of connections is now: ' + this.pool.length);
 };
 
+exports.class.prototype.processQueue = function(connection) {
+	if (this.queue.length == 0) return;
+	if (connection && !connection.isBusy()) {
+		connection.processRequest(this.queue.pop());
+		return;
+	}
+	connection = this.getConnection();
+	if (connection) connection.processRequest(this.queue.pop());
+};
+
 exports.class.prototype.processRequest = function(request) {
-	this.getConnection().processRequest(request);
+	this.queue.push(request);
+	this.processQueue();
 };
