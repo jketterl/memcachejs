@@ -7,6 +7,7 @@ exports.class.prototype.setConnection = function(connection){
 };
 
 exports.class.prototype.parseResponse = function(data){
+	if (typeof(data) != 'string') data = data.toString();
 	while (data.length > 0) {
 		if (!this.dataMode) {
 			var index = data.indexOf('\r\n');

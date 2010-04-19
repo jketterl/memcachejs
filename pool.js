@@ -47,8 +47,8 @@ exports.class.prototype.removeConnection = function(connection){
 		if (this.pool[i] == connection) {
 			this.pool.splice(i, 1);
 			//TODO this should be more specific, i.e. include a second parameter
-			connection.removeListener('status');
-			connection.removeListener('close');
+			//connection.removeListener('status');
+			//connection.removeListener('close');
 		}
 	}
 	//require('sys').puts('# of connections is now: ' + this.pool.length);

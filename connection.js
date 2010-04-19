@@ -1,7 +1,7 @@
 var Memcache = {
 		Request:require('./request').class
 };
-var tcp = require('tcp');
+var net = require('net');
 var sys = require('sys');
 
 exports.class = function(host, port){
@@ -19,8 +19,8 @@ exports.class.prototype.processRequest = function(request) {
 	if (!(this.request instanceof Memcache.Request)) this.request = new Memcache.Request(this.request);
 	this.request.setConnection(this);
 	this.getTcpConnection(function(connection){
-		connection.send(request.command + '\r\n');
-		if (request.data) connection.send(request.data + '\r\n');
+		connection.write(request.command + '\r\n');
+		if (request.data) connection.write(request.data + '\r\n');
 	});
 };
 
@@ -31,14 +31,14 @@ exports.class.prototype.isBusy = function() {
 exports.class.prototype.getTcpConnection = function(callback) {
 	if (this.tcpConnection == undefined) {
 		// no connection established? let's start a new one
-		var connection = tcp.createConnection(this.port, this.host);
+		var connection = net.createConnection(this.port, this.host);
 		if (callback) connection.addListener('connect', function(){
 			callback(connection);
 		});
 		// ugly closure
 		var method = this;
 		// add event listeners
-		connection.addListener('receive', function(){
+		connection.addListener('data', function(){
 			method.request.parseResponse.apply(method.request, arguments);
 		});
 		connection.addListener('close', function(){
@@ -54,7 +54,7 @@ exports.class.prototype.getTcpConnection = function(callback) {
 
 exports.class.prototype.close = function() {
 	if (!this.tcpConnection) return;
-	this.tcpConnection.close();
+	this.tcpConnection.end();
 	delete this.tcpConnection;
 	if (this.request) {
 		this.request.finish('ERROR');
