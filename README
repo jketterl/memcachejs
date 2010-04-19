@@ -3,6 +3,8 @@ node.js "net" module.
 
 Simple usage example:
 
+
+
 Memcache = require('/path/to/memcache.js/memcache');
 
 // Host and port of the constructor are optional. Default values are "localhost" and 11211. 
@@ -25,3 +27,8 @@ connection.get('some_key', function(response) {
 		// process results, they are stored in response.data
 	}
 });
+
+
+
+This client uses connection pooling, as suggested by the memcached documentation. If you'd like to turn it off, set
+Memcache.pooling to false.
