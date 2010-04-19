@@ -44,12 +44,11 @@ Memcache.prototype.getPool = function(){
 	return this.pool;
 };
 
-Memcache.prototype.get = function(key, options){
-	options = {}.apply(options);
+Memcache.prototype.get = function(key, callback){
 	var request = {
 			command:'get ' + key
 	};
-	if (options.callback) request.callback = options.callback;
+	if (callback) request.callback = callback;
 	this.processRequest(request);
 };
 
