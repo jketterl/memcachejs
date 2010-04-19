@@ -1,12 +1,14 @@
-exports.class = function(config){
+var Memcache = {};
+
+Memcache.Request = function(config){
 	if (config) this.apply(config);
 };
 
-exports.class.prototype.setConnection = function(connection){
+Memcache.Request.prototype.setConnection = function(connection){
 	this.connection = connection;
 };
 
-exports.class.prototype.parseResponse = function(data){
+Memcache.Request.prototype.parseResponse = function(data){
 	if (typeof(data) != 'string') data = data.toString();
 	while (data.length > 0) {
 		if (!this.dataMode) {
@@ -41,8 +43,10 @@ exports.class.prototype.parseResponse = function(data){
 	}
 };
 
-exports.class.prototype.finish = function(status){
+Memcache.Request.prototype.finish = function(status){
 	this.success = status != 'ERROR' && status != 'NOT_FOUND' && status != 'NOT_STORED';
 	if (this.callback) this.callback(this);
 	this.connection.finishRequest(this);
 };
+
+module.exports = Memcache.Request;

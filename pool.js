@@ -1,8 +1,8 @@
 var Memcache = {
-	Connection:require('./connection').class
+	Connection:require('./connection')
 };
 
-exports.class = function(options){
+Memcache.Pool = function(options){
 	// default settings
 	this.apply({
 		maxConnections:10,
@@ -16,7 +16,7 @@ exports.class = function(options){
 	this.queue = [];
 };
 
-exports.class.prototype.getConnection = function(){
+Memcache.Pool.prototype.getConnection = function(){
 	for (var i = 0; i < this.pool.length; i++) {
 		if (!this.pool[i].isBusy()) return this.pool[i];
 	}
@@ -29,7 +29,7 @@ exports.class.prototype.getConnection = function(){
 	return false;
 };
 
-exports.class.prototype.addConnection = function(connection){
+Memcache.Pool.prototype.addConnection = function(connection){
 	var method = this;
 	connection.addListener('status', function(status) {
 		if (status == 'idle') method.processQueue.apply(method, [connection]);
@@ -42,7 +42,7 @@ exports.class.prototype.addConnection = function(connection){
 	//require('sys').puts('# of connections is now: ' + this.pool.length);
 };
 
-exports.class.prototype.removeConnection = function(connection){
+Memcache.Pool.prototype.removeConnection = function(connection){
 	for (var i = 0; i < this.pool.length; i++){
 		if (this.pool[i] == connection) {
 			this.pool.splice(i, 1);
@@ -54,7 +54,7 @@ exports.class.prototype.removeConnection = function(connection){
 	//require('sys').puts('# of connections is now: ' + this.pool.length);
 };
 
-exports.class.prototype.processQueue = function(connection) {
+Memcache.Pool.prototype.processQueue = function(connection) {
 	if (this.queue.length == 0) return;
 	if (connection && !connection.isBusy()) {
 		connection.processRequest(this.queue.pop());
@@ -64,7 +64,9 @@ exports.class.prototype.processQueue = function(connection) {
 	if (connection) connection.processRequest(this.queue.pop());
 };
 
-exports.class.prototype.processRequest = function(request) {
+Memcache.Pool.prototype.processRequest = function(request) {
 	this.queue.push(request);
 	this.processQueue();
 };
+
+module.exports = Memcache.Pool;

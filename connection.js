@@ -1,17 +1,17 @@
 var Memcache = {
-		Request:require('./request').class
+		Request:require('./request')
 };
 var net = require('net');
 var sys = require('sys');
 
-exports.class = function(host, port){
+Memcache.Connection = function(host, port){
 	this.host = host;
 	this.port = port;
 };
 
-require('sys').inherits(exports.class, process.EventEmitter);
+sys.inherits(Memcache.Connection, process.EventEmitter);
 
-exports.class.prototype.processRequest = function(request) {
+Memcache.Connection.prototype.processRequest = function(request) {
 	// todo: implement some kind of queueing mechanism here
 	if (this.request) return;
 	this.emit('status', 'busy');
@@ -24,11 +24,11 @@ exports.class.prototype.processRequest = function(request) {
 	});
 };
 
-exports.class.prototype.isBusy = function() {
+Memcache.Connection.prototype.isBusy = function() {
 	return this.request != undefined;
 };
 
-exports.class.prototype.getTcpConnection = function(callback) {
+Memcache.Connection.prototype.getTcpConnection = function(callback) {
 	if (this.tcpConnection == undefined) {
 		// no connection established? let's start a new one
 		var connection = net.createConnection(this.port, this.host);
@@ -52,7 +52,7 @@ exports.class.prototype.getTcpConnection = function(callback) {
 	return this.tcpConnection;
 };
 
-exports.class.prototype.close = function() {
+Memcache.Connection.prototype.close = function() {
 	if (!this.tcpConnection) return;
 	this.tcpConnection.end();
 	delete this.tcpConnection;
@@ -62,18 +62,20 @@ exports.class.prototype.close = function() {
 	this.emit('close');
 };
 
-exports.class.prototype.finishRequest = function(request) {
+Memcache.Connection.prototype.finishRequest = function(request) {
 	if (request != this.request) return;
 	delete this.request;
 	this.emit('status', 'idle');
 };
 /*
-exports.class.prototype.setPool = function(pool) {
+Memcache.Connection.prototype.setPool = function(pool) {
 	this.pool = pool;
 };
 
-exports.class.prototype.getPool = function() {
+Memcache.Connection.prototype.getPool = function() {
 	if (this.pool) return this.pool;
 	return false;
 };
 */
+
+module.exports = Memcache.Connection;

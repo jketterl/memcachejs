@@ -1,8 +1,3 @@
-var Memcache = {
-	Connection:require('./connection').class,
-	Pool:require('./pool').class
-};
-
 // this is for easier combining of objects
 // but it might interfere with other (foreign) code
 // TODO replace with something less obstrusive
@@ -13,14 +8,17 @@ Object.prototype.apply = function(values) {
 	return this;
 };
 
-exports.class = function(host, port){
+Memcache = function(host, port){
 	this.host = host ? host : 'localhost';
 	this.port = port ? port : 11211;
 };
 
-exports.pooling = true;
+Memcache.Connection = require('./connection');
+Memcache.Pool = require('./pool');
 
-exports.class.prototype.getConnection = function(){
+Memcache.pooling = true;
+
+Memcache.prototype.getConnection = function(){
 	if (!this.connection) {
 		this.connection = new Memcache.Connection(this.host, this.port);
 	}
@@ -28,15 +26,15 @@ exports.class.prototype.getConnection = function(){
 	return this.getPool().getConnection();
 };
 
-exports.class.prototype.processRequest = function(request){
-	if (exports.pooling) {
+Memcache.prototype.processRequest = function(request){
+	if (Memcache.pooling) {
 		return this.getPool().processRequest(request);
 	} else {
 		return this.getConnection().processRequest(request);
 	}
 };
 
-exports.class.prototype.getPool = function(){
+Memcache.prototype.getPool = function(){
 	if (!this.pool) {
 		this.pool = new Memcache.Pool({
 			host:this.host,
@@ -46,7 +44,7 @@ exports.class.prototype.getPool = function(){
 	return this.pool;
 };
 
-exports.class.prototype.get = function(key, options){
+Memcache.prototype.get = function(key, options){
 	options = {}.apply(options);
 	var request = {
 			command:'get ' + key
@@ -55,7 +53,7 @@ exports.class.prototype.get = function(key, options){
 	this.processRequest(request);
 };
 
-exports.class.prototype.set = function(key, value, options){
+Memcache.prototype.set = function(key, value, options){
 	options = {
 		expires:0,
 		flags:0
@@ -68,7 +66,7 @@ exports.class.prototype.set = function(key, value, options){
 	this.processRequest(request);
 };
 
-exports.class.prototype.add = function(key, value, options){
+Memcache.prototype.add = function(key, value, options){
 	options = {
 		expires:0,
 		flags:0
@@ -81,7 +79,7 @@ exports.class.prototype.add = function(key, value, options){
 	this.processRequest(request);
 };
 
-exports.class.prototype.append = function(key, value, options){
+Memcache.prototype.append = function(key, value, options){
 	options = {}.apply(options);
 	var request = {
 		command:'append ' + key + ' 0 0 ' + value.length,
@@ -91,7 +89,7 @@ exports.class.prototype.append = function(key, value, options){
 	this.processRequest(request);
 };
 
-exports.class.prototype.prepend = function(key, value, options){
+Memcache.prototype.prepend = function(key, value, options){
 	options = {}.apply(options);
 	var request = {
 		command:'prepend ' + key + ' 0 0 ' + value.length,
@@ -101,7 +99,7 @@ exports.class.prototype.prepend = function(key, value, options){
 	this.processRequest(request);
 };
 
-exports.class.prototype.del = function(key, options){
+Memcache.prototype.del = function(key, options){
 	options = {}.apply(options);
 	var request = {
 		command:'delete ' + key
@@ -110,6 +108,8 @@ exports.class.prototype.del = function(key, options){
 	this.processRequest(request);
 };
 
-exports.class.prototype.shutdown = function(){
+Memcache.prototype.shutdown = function(){
 	if (this.connection) this.connection.close();
 };
+
+module.exports = Memcache;
