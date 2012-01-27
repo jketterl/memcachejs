@@ -58,7 +58,7 @@ Memcache.prototype.set = function(key, value, options){
 		flags:0
 	}.apply(options);
 	var request = {
-		command:'set ' + key + ' ' + options.flags + ' ' + options.expires + ' ' + value.length,
+		command:'set ' + key + ' ' + options.flags + ' ' + options.expires + ' ' + Buffer.byteLength(value),
 		data:value
 	};
 	if (options.callback) request.callback = options.callback;
@@ -71,7 +71,7 @@ Memcache.prototype.add = function(key, value, options){
 		flags:0
 	}.apply(options);
 	var request = {
-		command:'add ' + key + ' ' + options.flags + ' ' + options.expires + ' ' + value.length,
+		command:'add ' + key + ' ' + options.flags + ' ' + options.expires + ' ' + Buffer.byteLength(value),
 		data:value
 	};
 	if (options.callback) request.callback = options.callback;
@@ -81,7 +81,7 @@ Memcache.prototype.add = function(key, value, options){
 Memcache.prototype.append = function(key, value, options){
 	options = {}.apply(options);
 	var request = {
-		command:'append ' + key + ' 0 0 ' + value.length,
+		command:'append ' + key + ' 0 0 ' + Buffer.byteLength(value),
 		data:value
 	};
 	if (options.callback) request.callback = options.callback;
@@ -91,7 +91,7 @@ Memcache.prototype.append = function(key, value, options){
 Memcache.prototype.prepend = function(key, value, options){
 	options = {}.apply(options);
 	var request = {
-		command:'prepend ' + key + ' 0 0 ' + value.length,
+		command:'prepend ' + key + ' 0 0 ' + Buffer.byteLength(value),
 		data:value
 	};
 	if (options.callback) request.callback = options.callback;
