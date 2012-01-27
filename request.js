@@ -23,7 +23,8 @@ Memcache.Request.prototype.parseResponse = function(data){
 				this.finish(response);
 			} else {
 				// unknown response string
-				require('sys').puts(response);
+			    // TODO: this should be passed to the client somehow
+			    console.warn('"' + response + '" on command "' + this.command + '"');
 			}
 		} else {
 			var chunk = data.substr(0, this.expectedLength);
