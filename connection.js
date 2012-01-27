@@ -19,8 +19,9 @@ Memcache.Connection.prototype.processRequest = function(request) {
 	if (!(this.request instanceof Memcache.Request)) this.request = new Memcache.Request(this.request);
 	this.request.setConnection(this);
 	this.getTcpConnection(function(connection){
-		connection.write(request.command + '\r\n');
-		if (request.data) connection.write(request.data + '\r\n');
+	    var command = request.command + '\r\n';
+		if (request.data) command += request.data + '\r\n';
+		connection.write(command);
 	});
 };
 
