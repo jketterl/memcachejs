@@ -25,21 +25,18 @@ Memcache.Pool.prototype.getConnection = function(){
 		this.addConnection(connection);
 		return connection;
 	}
-	require('sys').puts('unable to open additional connections - max # of connections reached');
 	return false;
 };
 
 Memcache.Pool.prototype.addConnection = function(connection){
 	var method = this;
 	connection.addListener('status', function(status) {
-		if (status == 'idle') method.processQueue.apply(method, [connection]);
-		//require('sys').puts('status is now ' + status);
+		if (status == 'idle') method.processQueue(connection);
 	});
 	connection.addListener('close', function() {
 		method.removeConnection(connection);
 	});
 	this.pool.push(connection);
-	//require('sys').puts('# of connections is now: ' + this.pool.length);
 };
 
 Memcache.Pool.prototype.removeConnection = function(connection){
@@ -51,7 +48,6 @@ Memcache.Pool.prototype.removeConnection = function(connection){
 			//connection.removeListener('close');
 		}
 	}
-	//require('sys').puts('# of connections is now: ' + this.pool.length);
 };
 
 Memcache.Pool.prototype.processQueue = function(connection) {
