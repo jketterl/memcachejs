@@ -29,12 +29,12 @@ Memcache.Pool.prototype.getConnection = function(){
 };
 
 Memcache.Pool.prototype.addConnection = function(connection){
-	var method = this;
+	var me = this;
 	connection.addListener('status', function(status) {
-		if (status == 'idle') method.processQueue(connection);
+		if (status == 'idle') me.processQueue(connection);
 	});
 	connection.addListener('close', function() {
-		method.removeConnection(connection);
+		me.removeConnection(connection);
 	});
 	this.pool.push(connection);
 };

@@ -42,14 +42,14 @@ Memcache.Connection.prototype.getTcpConnection = function(callback) {
         if (callback) connection.addListener('connect', function(){
             callback(connection);
         });
-        // ugly closure
-        var method = this;
+        
+        var me = this;
         // add event listeners
         connection.addListener('data', function(){
-            method.request.parseResponse.apply(method.request, arguments);
+            me.request.parseResponse.apply(me.request, arguments);
         });
         connection.addListener('close', function(){
-            method.close.apply(method, arguments);
+            me.close.apply(me, arguments);
         });
         this.tcpConnection = connection;
     } else {
