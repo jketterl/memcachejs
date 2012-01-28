@@ -14,6 +14,7 @@ Memcache.Connection = function(host, port){
 sys.inherits(Memcache.Connection, process.EventEmitter);
 
 Memcache.Connection.prototype.processRequest = function(request) {
+    var me = this;
     //if already busy, then push on to the request queue
     if (this.isBusy()) {
         this.requestQ.push(request);
@@ -28,6 +29,7 @@ Memcache.Connection.prototype.processRequest = function(request) {
 	    var command = request.command + '\r\n';
 		if (request.data) command += request.data + '\r\n';
 		connection.write(command);
+		me.request.startTimer();
 	});
 };
 

@@ -45,9 +45,17 @@ Memcache.Request.prototype.parseResponse = function(data){
 };
 
 Memcache.Request.prototype.finish = function(status){
+    clearTimeout(this.timeout);
 	this.success = status != 'ERROR' && status != 'NOT_FOUND' && status != 'NOT_STORED';
 	if (this.callback) this.callback(this);
 	this.connection.finishRequest(this);
+};
+
+Memcache.Request.prototype.startTimer = function(){
+    var me = this;
+    this.timeout = setTimeout(function(){
+        me.finish('TIMEOUT');
+    }, 5000);
 };
 
 module.exports = Memcache.Request;
