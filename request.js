@@ -9,24 +9,38 @@ Memcache.Request.prototype.setConnection = function(connection){
 };
 
 Memcache.Request.prototype.parseResponse = function(data){
-	if (typeof(data) != 'string') data = data.toString();
-	while (data.length > 0) {
+    if (!Buffer.isBuffer(data)) throw new Error('Buffer object expected!');
+    var pos = 0;
+    while (pos < data.length) {
 		if (!this.dataMode) {
-			var index = data.indexOf('\r\n');
-			var response = data.substr(0, index);
-			var data = data.substr(index + 2, data.length - 2);
-			if (response.substring(0, 5) == 'VALUE') {
-				this.dataMode = true;
-				var split = response.split(' ');
-				this.expectedLength = split[3];
-			} else if (response == 'END' || response == 'ERROR' || response == 'STORED' || response == 'DELETED' || response == 'NOT_FOUND' || response == 'NOT_STORED') {
-				this.finish(response);
+		    var command = '';
+		    while (command.indexOf('\r\n') < 0 && pos < data.length) {
+		        command += data.slice(pos, ++pos);
+		    }
+		    command = command.slice(0, command.length -2);
+			if (command.substring(0, 5) == 'VALUE') {
+			    this.dataMode = true;
+				var split = command.split(' ');
+				this.expectedLength = parseInt(split[3]);
+			} else if (command == 'END' || command == 'ERROR' || command == 'STORED' || command == 'DELETED' || command == 'NOT_FOUND' || command == 'NOT_STORED') {
+				this.finish(command);
 			} else {
 				// unknown response string
 			    // TODO: this should be passed to the client somehow
-			    console.warn('"' + response + '" on command "' + this.command + '"');
+			    console.warn('unexpected: "' + command + '" on command "' + this.command + '"');
 			}
 		} else {
+            this.data = this.data || '';
+            if (data.length - pos > this.expectedLength) {
+                this.data += data.slice(pos, pos + this.expectedLength);
+                // data is followed by \r\n - we can skip that.
+                pos += this.expectedLength + 2;
+                delete(this.dataMode);
+            } else {
+                this.data += data.slice(pos);
+                pos = data.length;
+            }
+            /*
 			var chunk = data.substr(0, this.expectedLength);
 			this.expectedLength -= chunk.length;
 			if (this.data) {
@@ -40,6 +54,7 @@ Memcache.Request.prototype.parseResponse = function(data){
 			} else {
 				data = '';
 			}
+			*/
 		}
 	}
 };
