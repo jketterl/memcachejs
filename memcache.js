@@ -57,8 +57,9 @@ Memcache.prototype.set = function(key, value, options){
 		expires:0,
 		flags:0
 	}.apply(options);
+	value = new Buffer(value);
 	var request = {
-		command:'set ' + key + ' ' + options.flags + ' ' + options.expires + ' ' + Buffer.byteLength(value),
+		command:'set ' + key + ' ' + options.flags + ' ' + options.expires + ' ' + value.length,
 		data:value
 	};
 	if (options.callback) request.callback = options.callback;
