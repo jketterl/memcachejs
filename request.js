@@ -62,8 +62,8 @@ Memcache.Request.prototype.parseResponse = function(data){
 Memcache.Request.prototype.finish = function(status){
     clearTimeout(this.timeout);
 	this.success = status != 'ERROR' && status != 'NOT_FOUND' && status != 'NOT_STORED';
-	if (this.callback) this.callback(this);
 	this.connection.finishRequest(this);
+    if (this.callback) this.callback(this);
 };
 
 Memcache.Request.prototype.startTimer = function(){

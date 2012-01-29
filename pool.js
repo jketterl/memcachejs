@@ -65,4 +65,10 @@ Memcache.Pool.prototype.processRequest = function(request) {
 	this.processQueue();
 };
 
+Memcache.Pool.prototype.close = function(){
+    for (var i = this.pool.length - 1; i >= 0; i--) {
+        this.pool[0].close();
+    }
+};
+
 module.exports = Memcache.Pool;

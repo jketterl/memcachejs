@@ -109,7 +109,8 @@ Memcache.prototype.del = function(key, options){
 };
 
 Memcache.prototype.shutdown = function(){
-	if (this.connection) this.connection.close();
+    var obj = (Memcache.pooling ? this.pool : this.connection);
+    if (obj) obj.close();
 };
 
 module.exports = Memcache;
