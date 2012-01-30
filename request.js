@@ -25,9 +25,7 @@ Memcache.Request.prototype.parseResponse = function(data){
 			} else if (command == 'END' || command == 'ERROR' || command == 'STORED' || command == 'DELETED' || command == 'NOT_FOUND' || command == 'NOT_STORED') {
 				this.finish(command);
 			} else {
-				// unknown response string
-			    // TODO: this should be passed to the client somehow
-			    console.warn('unexpected: "' + command + '" on command "' + this.command + '"');
+			    this.finish('UNEXPECTED');
 			}
 		} else {
             this.data = this.data || '';
@@ -38,30 +36,16 @@ Memcache.Request.prototype.parseResponse = function(data){
                 delete(this.dataMode);
             } else {
                 this.data += data.slice(pos);
+                this.expectedLength -= data.length - pos;
                 pos = data.length;
             }
-            /*
-			var chunk = data.substr(0, this.expectedLength);
-			this.expectedLength -= chunk.length;
-			if (this.data) {
-				this.data += chunk;
-			} else {
-				this.data = chunk;
-			}
-			if (chunk.length < data.length) {
-				data = data.substr(chunk.length +2, data.length - chunk.length - 2);
-				delete this.dataMode;
-			} else {
-				data = '';
-			}
-			*/
 		}
 	}
 };
 
 Memcache.Request.prototype.finish = function(status){
     clearTimeout(this.timeout);
-	this.success = status != 'ERROR' && status != 'NOT_FOUND' && status != 'NOT_STORED';
+	this.success = status != 'ERROR' && status != 'NOT_FOUND' && status != 'NOT_STORED' && status != 'TIMEOUT' && status != 'UNEXPECTED';
 	this.connection.finishRequest(this);
     if (this.callback) this.callback(this);
 };
