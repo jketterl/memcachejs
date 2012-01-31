@@ -2,7 +2,7 @@ var Memcache = {
     Request:require('./request')
 };
 var net = require('net');
-var sys = require('sys');
+var EventEmitter = require('events').EventEmitter;
 
 Memcache.Connection = function(host, port){
     this.host = host;
@@ -11,7 +11,7 @@ Memcache.Connection = function(host, port){
     this.requestQ = [];
 };
 
-sys.inherits(Memcache.Connection, process.EventEmitter);
+Memcache.Connection.prototype = new EventEmitter;
 
 Memcache.Connection.prototype.processRequest = function(request) {
     var me = this;
