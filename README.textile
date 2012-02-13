@@ -1,0 +1,45 @@
+h1. Memcache.js
+
+This is an implementation of the memcache protocol written in javascript. It uses the sockets layer as provided by the
+node.js "net" module.
+
+To use the code, you can include it as an external include directly from your project: 
+
+bc. 
+Memcache = require('/path/to/memcache');
+
+Or, alternatively, you can checkout / copy the code from this repository into the node_modules subfolder of your project by hand, and include it like this:
+
+bc. 
+Memcache = require('memcache')
+
+An npm installation that will simplify inclusion is currently being worked on.
+
+Simple usage example:
+
+bc.. 
+// Host and port of the constructor are optional. Default values are "localhost" and 11211. 
+var connection = new Memcache(host, port);
+
+// setting key "some_key" to the value "some_value" on the memcache server
+connection.set('some_key', 'some_value');
+// same with callback and additional options
+connection.set('some_key', 'some_value', {
+	expires:60,
+	flags:0,
+	callback: function () {
+		// do something here
+	}
+});
+
+// retrieve key "some_key" from the memcache server
+connection.get('some_key', function(response) {
+	if (response.success) {
+		// process results, they are stored in response.data
+		console.dir(response.data);
+	}
+});
+bc. 
+
+This client uses connection pooling, as suggested by the memcached documentation. If you'd like to turn it off, set
+Memcache.pooling to false.
