@@ -41,5 +41,10 @@ connection.get('some_key', function(response) {
 });
 bc. 
 
+After you are finished getting / setting data from your server, you should tell all connections to close by issuing the @shutdown()@ command:
+
+bc. 
+connection.shutdown();
+
 This client uses connection pooling, as suggested by the memcached documentation. If you'd like to turn it off, set
 Memcache.pooling to false.
