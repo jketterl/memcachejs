@@ -11,5 +11,5 @@
   "engines": {
     "node": "~0.6.9"
   },
-  "keywords": ["memcache", "memcached", "cxo", "couchbase", "chip.de"],
+  "keywords": ["memcache", "memcached", "cxo", "couchbase", "chip.de"]
 }
