@@ -1,0 +1,19 @@
+{
+  "author": "Jakob Ketterl <jketterl@chipxonio.de> (http://www.chip.de)",
+  "name": "memcachejs",
+  "description": "simple memcache client with pooling and string buffer usage",
+  "keywords": ["memcache", "memcached", "cxo", "couchbase", "chip.de"],
+  "version": "0.1.0",
+  "homepage": "https://github.com/jketterl/memcachejs",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jketterl/memcachejs.git"
+  },
+  "dependencies": {},
+  "main": "index",
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
