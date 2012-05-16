@@ -1,8 +1,9 @@
 {
-  "author": "Jakob Ketterl <jakob.ketterl@gmx.de>",
-  "name": "memcache",
-  "description": "A basic implementation of the memcache protocol, written in JavaScript.",
+  "author": "Jakob Ketterl <jketterl@chipxonio.de> (http://www.chip.de)",
+  "name": "memcachejs",
+  "description": "simple memcache client implementation with pooling and string buffer usage",
   "version": "0.1.0",
+  "homepage": "https://github.com/jketterl/memcachejs",
   "repository": {
     "type": "git",
     "url": "git://github.com/jketterl/memcachejs.git"
@@ -10,7 +11,5 @@
   "engines": {
     "node": "~0.6.9"
   },
-  "dependencies": {},
-  "devDependencies": {},
-  "optionalDependencies": {}
+  "keywords": ["memcache", "memcached", "cxo", "couchbase", "chip.de"],
 }
