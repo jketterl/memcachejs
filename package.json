@@ -1,0 +1,16 @@
+{
+  "author": "Jakob Ketterl <jakob.ketterl@gmx.de>",
+  "name": "memcache",
+  "description": "A basic implementation of the memcache protocol, written in JavaScript.",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jketterl/memcachejs.git"
+  },
+  "engines": {
+    "node": "~0.6.9"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {}
+}
