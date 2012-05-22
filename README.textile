@@ -3,21 +3,17 @@ h1. Memcache.js
 This is an implementation of the memcache protocol written in javascript. It uses the sockets layer as provided by the
 node.js "net" module.
 
-To use the code, you can include it as an external include directly from your project: 
+The simplest way to install this code is by using npm:
 
 bc. 
-Memcache = require('/path/to/memcache');
+npm install memcachejs
 
-Or, alternatively, you can checkout / copy the code from this repository into the node_modules subfolder of your project by hand, and include it like this:
-
-bc. 
-Memcache = require('memcache')
-
-An npm installation that will simplify inclusion is currently being worked on.
+A simple @var Memcache = require('memcachejs')@ will then be enough to get you started.
 
 Simple usage example:
 
 bc.. 
+var Memcache = require('memcachejs');
 // Host and port of the constructor are optional. Default values are "localhost" and 11211. 
 var connection = new Memcache(host, port);
 
